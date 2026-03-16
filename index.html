@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LikePro | المتجر الرقمي الموثق</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">LikePro</div>
+            <nav class="nav-links">
+                <a href="#about">من نحن</a>
+                <a href="#contact">اتصل بنا</a>
+                <a href="cart.html">🛒 السلة (<span id="cart-count">0</span>)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="products-container" class="grid-container"></main>
+
+    <section id="about" style="max-width: 800px; margin: 40px auto; text-align: center; padding: 20px; border-top: 1px solid #334155;">
+        <h2 style="color: #38bdf8;">من نحن</h2>
+        <p style="color: #cbd5e1; line-height: 1.8;">
+            متجر LikePro مرخص وموثق لتقديم أفضل البطاقات الرقمية في المملكة العربية السعودية. 
+            نلتزم بأعلى معايير الجودة والأمان الرقمي لضمان تجربة تسوق موثوقة وسريعة لعملائنا.
+        </p>
+        <div style="background: #0f172a; padding: 8px 18px; border-radius: 50px; border: 1px solid #22c55e; color: #22c55e; display: inline-block; margin-top: 10px; font-size: 14px; font-weight: bold;">
+            ✓ متجر موثق ومعتمد في السعودية
+        </div>
+    </section>
+
+    <section style="max-width: 800px; margin: 20px auto; text-align: center; padding: 20px;">
+        <h3 style="color: #f8fafc; margin-bottom: 25px; font-size: 18px; opacity: 0.8;">طرق الدفع المقبولة</h3>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/akthr.png" alt="Akthr" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/apple-pay.png" alt="Apple Pay" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/imrikan.png" alt="Amex" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/mada.png" alt="Mada" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/qitaf.png" alt="Qitaf" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/stcpay.png" alt="STC Pay" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/tabby.png" alt="Tabby" style="height: 25px;"></div>
+            <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/visa.png" alt="Visa" style="height: 25px;"></div>
+             <div style="background: white; padding: 5px 10px; border-radius: 8px;"><img src="imegs/card.png" alt="card" style="height: 25px;"></div>      
+        </div>
+    </section>
+
+    <footer id="contact" style="text-align: center; padding: 40px; background: #1e293b; border-top: 1px solid #334155; margin-top: 20px;">
+        <h2 style="color: #38bdf8; margin-bottom: 15px;">اتصل بنا</h2>
+        <p style="color: #cbd5e1; margin: 5px 0;">البريد الإلكتروني: support@likepro.sa</p>
+        <p style="color: #cbd5e1; margin: 5px 0;">واتساب: 966546274401</p>
+        <div style="margin-top: 30px; font-size: 13px; color: #64748b; border-top: 1px solid #334155; padding-top: 20px;">
+            جميع الحقوق محفوظة © 2026 LikePro | متجر رقمي مسجل
+        </div>
+    </footer>
+
+    <a href="cart.html" style="position: fixed; bottom: 20px; left: 20px; background: #38bdf8; color: white; padding: 15px 22px; border-radius: 50px; text-decoration: none; font-weight: bold; box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); z-index: 1000; display: flex; align-items: center; gap: 8px;">
+        <span>🛒</span> السلة
+    </a>
+
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title"></h3>
+            <div id="options-grid"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
